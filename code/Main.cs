@@ -63,6 +63,7 @@ namespace notifier {
 		/// </summary>
 		private async void Main_Load(object sender, EventArgs e) {
 
+			groupBox3.Visible = false;
 			// play a pop sound at application startup
 			if (Settings.Default.AudioPop) {
 				using (SoundPlayer player = new SoundPlayer(Resources.pop_open)) {

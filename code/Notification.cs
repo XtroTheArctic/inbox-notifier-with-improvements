@@ -71,62 +71,7 @@ namespace notifier {
 		/// </summary>
 		/// <param name="balloon">Define if the interaction is provided by the balloon tip</param>
 		public async Task Interaction(bool balloon = false) {
-
-			// by default, always open the gmail inbox in a browser if the interaction is provided by a double click on the systray icon
-			if (!balloon) {
-					Process.Start($"{GetBaseURL()}/#inbox");
-					return;
-			}
-
-			// display the form and focus the update tab
-			if (balloon && Tag == "update") {
-				UI.Visible = true;
-				UI.ShowInTaskbar = true;
-				UI.WindowState = FormWindowState.Normal;
-				UI.Focus();
-				UI.tabControl.SelectTab("tabPageUpdate");
-				Tag = null;
-
-				return;
-			}
-
-			// do nothing if the notification behavior is set to "do nothing"
-			if (balloon && Settings.Default.NotificationBehavior == (uint)Behavior.DoNothing) {
-				return;
-			}
-
-			// mark the message as read if the notification behavior is set to "mark as read"
-			if (balloon && Settings.Default.NotificationBehavior == (uint)Behavior.MarkAsRead) {
-				await UI.GmailService.Inbox.MarkAsRead();
-
-				// prevent systray icon restoration when spams are marked as read and there is other messages in the inbox
-				if (UI.GmailService.Inbox.UnreadThreads != 0) {
-					return;
-				}
-			} else {
-				Process.Start($"{GetBaseURL()}/{Tag}");
-			}
-
-			// clean the tag
-			Tag = null;
-
-			// restore the default systray icon and text: pretend that the user had read all his mail, except if the timeout option is activated
-			if (!Paused) {
-
-				// reset the number of unread threads
-				UI.GmailService.Inbox.UnreadThreads = 0;
-
-				// update the synchronization time
-				UI.GmailService.Inbox.Time = DateTime.Now;
-
-				// restore the default systray icon and text
-				UI.notifyIcon.Icon = Resources.normal;
-				UI.notifyIcon.Text = $"{Translation.noMessage}\n{Translation.syncTime.Replace("{time}", DateTime.Now.ToLongTimeString())}";
-
-				// disable the mark as read menu item
-				UI.menuItemMarkAsRead.Text = Translation.markAsRead;
-				UI.menuItemMarkAsRead.Enabled = false;
-			}
+				Process.Start($"{GetBaseURL()}/#inbox");
 		}
 
 		/// <summary>
