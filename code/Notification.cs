@@ -73,13 +73,9 @@ namespace notifier {
 		public async Task Interaction(bool balloon = false) {
 
 			// by default, always open the gmail inbox in a browser if the interaction is provided by a double click on the systray icon
-			if (Tag == null) {
-
-				if (!balloon) {
+			if (!balloon) {
 					Process.Start($"{GetBaseURL()}/#inbox");
-				}
-
-				return;
+					return;
 			}
 
 			// display the form and focus the update tab
