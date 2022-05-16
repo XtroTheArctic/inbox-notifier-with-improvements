@@ -83,6 +83,7 @@ namespace notifier {
 					// suspend the main timer
 					UI.timer.Enabled = false;
 				}
+				else if (target.Mode == PowerModes.Resume) UI.timer.Enabled = true;
 			});
 		}
 
