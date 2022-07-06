@@ -81,7 +81,7 @@ namespace notifier {
 				if (target.Mode == PowerModes.Suspend) {
 
 					// suspend the main timer
-					UI.timer.Enabled = false;
+					//xtro: UI.timer.Enabled = false;
 				}
 				else if (target.Mode == PowerModes.Resume) UI.timer.Enabled = true;
 			});
@@ -109,7 +109,7 @@ namespace notifier {
 				} else if (target.Reason == SessionSwitchReason.SessionLock) {
 
 					// suspend the main timer
-					UI.timer.Enabled = false;
+					//xtro: UI.timer.Enabled = false;
 
 					// suspend the reconnect timer and reset reconnection count
 					UI.timerReconnect.Enabled = false;
