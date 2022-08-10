@@ -1089,10 +1089,6 @@ namespace notifier {
 			this.menuItemExit.Index = 7;
 			this.menuItemExit.Click += new System.EventHandler(this.menuItemExit_Click);
 			// 
-			// timerReconnect
-			// 
-			this.timerReconnect.Tick += new System.EventHandler(this.timerReconnect_Tick);
-			// 
 			// ringtoneMenu
 			// 
 			this.ringtoneMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {

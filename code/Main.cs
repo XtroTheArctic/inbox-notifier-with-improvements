@@ -152,7 +152,6 @@ namespace notifier {
 			});
 
 			// bind all computer services
-			ComputerService.BindNetwork();
 			ComputerService.BindPowerMode();
 			ComputerService.BindSessionSwitch();
 
@@ -573,11 +572,6 @@ namespace notifier {
 		/// </summary>
 		private void linkRestartToApply_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			Core.RestartApplication();
-		}
-
-		// attempt to reconnect the user mailbox
-		private async void timerReconnect_Tick(object sender, EventArgs e) {
-			await GmailService.Inbox.Retry();
 		}
 
 		/// <summary>

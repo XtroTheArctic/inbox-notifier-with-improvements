@@ -38,42 +38,6 @@ namespace notifier {
 		}
 
 		/// <summary>
-		/// Bind the "NetworkAvailabilityChanged" event to automatically sync the inbox when a network is available
-		/// </summary>
-		public void BindNetwork() {
-			NetworkChange.NetworkAvailabilityChanged += new NetworkAvailabilityChangedEventHandler(async (object source, NetworkAvailabilityEventArgs target) => {
-
-				// stop the reconnect process if it is running
-				if (UI.GmailService.Inbox.ReconnectionAttempts != 0) {
-					UI.timerReconnect.Enabled = false;
-					UI.timerReconnect.Interval = 100;
-					UI.GmailService.Inbox.ReconnectionAttempts = 0;
-				}
-
-				// loop through all network interface to check network connectivity
-				foreach (NetworkInterface network in NetworkInterface.GetAllNetworkInterfaces()) {
-
-					// discard "non-up" status, modem, serial, loopback and tunnel
-					if (network.OperationalStatus != OperationalStatus.Up || network.Speed < 0 || network.NetworkInterfaceType == NetworkInterfaceType.Loopback || network.NetworkInterfaceType == NetworkInterfaceType.Tunnel) {
-						continue;
-					}
-
-					// discard virtual cards (like virtual box, virtual pc, etc.) and microsoft loopback adapter (showing as ethernet card)
-					if (network.Name.ToLower().Contains("virtual") || network.Description.ToLower().Contains("virtual") || network.Description.ToLower() == ("microsoft loopback adapter")) {
-						continue;
-					}
-
-					// sync the inbox when a network interface is available and the timeout mode is disabled
-					if (!UI.NotificationService.Paused) {
-						await UI.GmailService.Inbox.Sync();
-					}
-
-					break;
-				}
-			});
-		}
-
-		/// <summary>
 		/// Bind the "PowerModeChanged" event to automatically pause/resume the application synchronization
 		/// </summary>
 		public void BindPowerMode() {
@@ -111,9 +75,6 @@ namespace notifier {
 					// suspend the main timer
 					//xtro: UI.timer.Enabled = false;
 
-					// suspend the reconnect timer and reset reconnection count
-					UI.timerReconnect.Enabled = false;
-					UI.timerReconnect.Interval = 100;
 					UI.GmailService.Inbox.ReconnectionAttempts = 0;
 				}
 			});

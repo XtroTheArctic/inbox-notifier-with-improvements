@@ -81,14 +81,6 @@ namespace notifier {
 				return;
 			}
 
-			// if internet is down, attempt to reconnect the user mailbox
-			if (!await Computer.IsInternetAvailable()) {
-				UI.timerReconnect.Enabled = true;
-				UI.timer.Enabled = false;
-
-				return;
-			}
-
 			// refresh the token if needed
 			if (token) {
 				await UI.GmailService.RefreshToken();
@@ -371,60 +363,6 @@ namespace notifier {
 				Core.Log($"MarkAsRead: {exception.Message}");
 			} finally {
 				UI.notifyIcon.Text = $"{UI.notifyIcon.Text.Split('\n')[0]}\n{Translation.syncTime.Replace("{time}", Time.ToLongTimeString())}";
-			}
-		}
-
-		/// <summary>
-		/// Retry to reconnect the inbox
-		/// </summary>
-		public async Task Retry() {
-
-			// increase the number of reconnection attempt
-			ReconnectionAttempts++;
-
-			// bypass the first reconnection attempt because the last synchronization have already checked the internet connectivity
-			if (ReconnectionAttempts == 1) {
-
-				// set the reconnection interval
-				UI.timerReconnect.Interval = (int)Settings.Default.INTERVAL_RECONNECT * 1000;
-
-				// disable the menu items
-				UI.menuItemSynchronize.Enabled = false;
-				UI.menuItemTimout.Enabled = false;
-				UI.menuItemSettings.Enabled = false;
-
-				// display the reconnection attempt message on the icon
-				UI.notifyIcon.Icon = Resources.retry;
-				UI.notifyIcon.Text = Translation.reconnectAttempt;
-
-				return;
-			}
-
-			// if internet is down, wait for INTERVAL_RECONNECT seconds before next attempt
-			if (!await Computer.IsInternetAvailable()) {
-
-				// after max unsuccessull reconnection attempts, the application waits for the next sync
-				if (ReconnectionAttempts == Settings.Default.MAX_AUTO_RECONNECT) {
-					UI.timerReconnect.Enabled = false;
-					UI.timerReconnect.Interval = 100;
-					UI.timer.Enabled = true;
-
-					// activate the necessary menu items to allow the user to manually sync the inbox
-					UI.menuItemSynchronize.Enabled = true;
-
-					// display the last reconnection message on the icon
-					UI.notifyIcon.Icon = Resources.warning;
-					UI.notifyIcon.Text = $"{Translation.reconnectFailed}\n{Translation.syncTime.Replace("{time}", Time.ToLongTimeString())}";
-				}
-			} else {
-
-				// restore default operation when internet is available
-				UI.timerReconnect.Enabled = false;
-				UI.timerReconnect.Interval = 100;
-				UI.timer.Enabled = true;
-
-				// sync the user mailbox
-				await Sync().ConfigureAwait(false);
 			}
 		}
 
