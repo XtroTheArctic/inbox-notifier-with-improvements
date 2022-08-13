@@ -47,8 +47,7 @@ namespace notifier {
 		/// Asynchronous method used to synchronize the user inbox
 		/// </summary>
 		/// <param name="manual">Indicate if the synchronization come's from the timer tick or has been manually triggered</param>
-		/// <param name="token">Indicate if the Gmail token need to be refreshed</param>
-		public async Task Sync(bool manual = true, bool token = false) {
+		public async Task Sync(bool manual = true) {
 
 			// temp variable
 			bool userAction = manual;
@@ -81,10 +80,7 @@ namespace notifier {
 				return;
 			}
 
-			// refresh the token if needed
-			if (token) {
-				await UI.GmailService.RefreshToken();
-			}
+			await UI.GmailService.RefreshToken();
 
 			// activate the necessary menu items
 			UI.menuItemSynchronize.Enabled = true;
