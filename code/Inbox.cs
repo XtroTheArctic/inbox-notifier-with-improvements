@@ -80,7 +80,15 @@ namespace notifier {
 				return;
 			}
 
-			await UI.GmailService.RefreshToken();
+            try
+            {
+                await UI.GmailService.RefreshToken();
+            }
+            catch (WebException E)
+            {
+                if (E.Message.Contains("remote name could not be resolved")) return;
+                else throw;
+            }
 
 			// activate the necessary menu items
 			UI.menuItemSynchronize.Enabled = true;
