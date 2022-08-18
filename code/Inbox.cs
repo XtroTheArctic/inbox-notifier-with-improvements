@@ -87,7 +87,7 @@ namespace notifier {
             catch (WebException E)
             {
                 if (E.Message.Contains("remote name could not be resolved")) return;
-                else throw;
+                throw;
             }
 
 			// activate the necessary menu items
@@ -106,13 +106,22 @@ namespace notifier {
 
 			try {
 
-				// connect the gmail service base client api
-				if (User == null) {
-					User = await UI.GmailService.Connect();
-				}
+                // connect the gmail service base client api
+                if (User == null)
+                {
+                    try
+                    {
+                        User = await UI.GmailService.Connect();
+                    }
+                    catch (WebException E)
+                    {
+                        if (E.Message.Contains("remote name could not be resolved")) return;
+                        throw;
+                    }
+                }
 
-				// get the "inbox" label
-				Box = await User.Labels.Get("me", "INBOX").ExecuteAsync();
+                // get the "inbox" label
+                Box = await User.Labels.Get("me", "INBOX").ExecuteAsync();
 
 				// update the statistics
 				if (userAction) {
@@ -380,10 +389,19 @@ namespace notifier {
 				return;
 			}
 
-			// prevent statistics error (mainly due to scheduler setting)
-			if (User == null) {
-				User = await UI.GmailService.Connect();
-			}
+            // prevent statistics error (mainly due to scheduler setting)
+            if (User == null)
+            {
+                try
+                {
+                    User = await UI.GmailService.Connect();
+                }
+                catch (WebException E)
+                {
+                    if (E.Message.Contains("remote name could not be resolved")) return;
+                    throw;
+                }
+            }
 
 			// retrieve the current inbox
 			if (Box == null) {
