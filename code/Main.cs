@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Media;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using notifier.Languages;
@@ -533,14 +534,14 @@ namespace notifier {
 				return;
 			}
 
-			// synchronize the inbox
-			await GmailService.Inbox.Sync(false);
-		}
+            // synchronize the inbox
+            await GmailService.Inbox.Sync(false);
+        }
 
-		/// <summary>
-		/// Disconnect the Gmail account from the application
-		/// </summary>
-		private void buttonGmailDisconnect_Click(object sender, EventArgs e) {
+        /// <summary>
+        /// Disconnect the Gmail account from the application
+        /// </summary>
+        private void buttonGmailDisconnect_Click(object sender, EventArgs e) {
 
 			// ask the user for disconnect
 			DialogResult dialog = MessageBox.Show(Translation.gmailDisconnectQuestion.Replace("{email}", labelEmailAddress.Text), Translation.gmailDisconnect, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Media;
 using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Google.Apis.Gmail.v1;
@@ -84,10 +85,9 @@ namespace notifier {
             {
                 await UI.GmailService.RefreshToken();
             }
-            catch (WebException E)
+            catch (HttpRequestException E) when (E.InnerException is WebException E2 && E2.Message.Contains("remote name could not be resolved"))
             {
-                if (E.Message.Contains("remote name could not be resolved")) return;
-                throw;
+                return;
             }
 
 			// activate the necessary menu items
@@ -109,15 +109,7 @@ namespace notifier {
                 // connect the gmail service base client api
                 if (User == null)
                 {
-                    try
-                    {
-                        User = await UI.GmailService.Connect();
-                    }
-                    catch (WebException E)
-                    {
-                        if (E.Message.Contains("remote name could not be resolved")) return;
-                        throw;
-                    }
+                    User = await UI.GmailService.Connect();
                 }
 
                 // get the "inbox" label
@@ -392,15 +384,7 @@ namespace notifier {
             // prevent statistics error (mainly due to scheduler setting)
             if (User == null)
             {
-                try
-                {
-                    User = await UI.GmailService.Connect();
-                }
-                catch (WebException E)
-                {
-                    if (E.Message.Contains("remote name could not be resolved")) return;
-                    throw;
-                }
+                User = await UI.GmailService.Connect();
             }
 
 			// retrieve the current inbox
